@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31321.278
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BenfordSet", "BenfordSet\BenfordSet.csproj", "{32CE03D4-C6CE-41AA-8DB0-97D937094B47}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{32CE03D4-C6CE-41AA-8DB0-97D937094B47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32CE03D4-C6CE-41AA-8DB0-97D937094B47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32CE03D4-C6CE-41AA-8DB0-97D937094B47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32CE03D4-C6CE-41AA-8DB0-97D937094B47}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {39795D25-E2B9-40D8-B901-C0DC2914A078}
+	EndGlobalSection
+EndGlobal
