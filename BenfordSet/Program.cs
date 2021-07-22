@@ -6,14 +6,17 @@ using UglyToad.PdfPig.Content;
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace BenfordSet
 {
     class Programs
     {
         class GetPdf
         {
-            public string Filename { get; private set; }
+            public string Filename { get; private set; }                 //{ 
+                //    if (!String.IsNullOrEmpty(value))
+                //        Filename = value; 
+                //} 
+            
             public string Foldername { get; private set; }
             public string PdfContent { get; set; }
 
@@ -99,23 +102,22 @@ namespace BenfordSet
                 }     
             }
 
-            //public void GetPdfContent()
-            //{
-            //    using (PdfDocument document = PdfDocument.Open(@"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\2012_Book_FEM.pdf"))
-            //    {
-            //        foreach (Page page in document.GetPages())
-            //        {
-            //            IReadOnlyList<Letter> letters = page.Letters;
-            //            string example = string.Join(string.Empty, letters.Select(x => x.Value));
-            //            //Console.WriteLine(example);
-            //            IEnumerable<Word> words = page.GetWords();
-
-            //            IEnumerable<IPdfImage> images = page.GetImages();
-            //            //Console.WriteLine(images);
-            //            //PdfContent = example;
-            //        }
-            //    }
-            //}
+            public void GetPdfContent()
+            {
+                using (PdfDocument document = PdfDocument.Open(@"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\2012_Book_FEM.pdf"))
+                {
+                    foreach (Page page in document.GetPages())
+                    {
+                        IReadOnlyList<Letter> letters = page.Letters;
+                        string example = string.Join(string.Empty, letters.Select(x => x.Value));
+                        IEnumerable<Word> words = page.GetWords();
+                        string rawText = "";
+                        rawText += page.Text;
+                        PdfContent += rawText;
+                        IEnumerable<IPdfImage> images = page.GetImages();
+                    }
+                }
+            }
 
             public void CountNumbers(string raw)
             {
@@ -154,15 +156,13 @@ namespace BenfordSet
                     else if (match.Value.StartsWith("9"))
                         numbers[8] += 1;
 
-                    else
-                        Console.WriteLine("I dont know what to do....");
                 }
 
-                for (int i = 1; i <= 9; i++)
-                {
-                    Console.WriteLine("Anzahl der Zahl {0}: {1}", i, numbers[i - 1]);
-                }
-                Console.WriteLine("All numbers in the file: {0}", AllNumbers);
+                //for (int i = 1; i <= 9; i++)
+                //{
+                //    Console.WriteLine("Anzahl der Zahl {0}: {1}", i, numbers[i - 1]);
+                //}
+                //Console.WriteLine("All numbers in the file: {0}", AllNumbers);
                 CalculateDistribution(numbers, AllNumbers);
             }
 
@@ -170,7 +170,6 @@ namespace BenfordSet
             {
                 double[] digits = new double[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
                 double[] convertNumbers = new double[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-                Console.WriteLine(AllNumbers);
 
                 for(int z=0; z <= 8 ; z++)
                 {
@@ -189,11 +188,6 @@ namespace BenfordSet
                     Console.WriteLine("There are no numbers in the file");
                     Environment.Exit(1);
                 }
-
-                foreach (int digit in digits)
-                {
-                    Console.WriteLine(digit + " %");
-                }
                 BenfordNumbers(digits);
             }
 
@@ -201,23 +195,46 @@ namespace BenfordSet
             public void BenfordNumbers(double[] digits)
             {
                 double[] benfordNumbers = new double[9] { 30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6 };
+                double[] calcdiff = CalculateDifference(benfordNumbers, digits);
 
-                //foreach (double num in benfordNumbers)
-                //    Console.WriteLine(num + "\t%");
-                PrinResults(benfordNumbers, digits);
+                PrinResults(benfordNumbers, digits, calcdiff);
+
             }
 
-           
 
-            public void PrinResults(double[] benford, double[] digits)
+            public void PrinResults(double[] benford, double[] digits, double[] difference)
             {
                 Console.WriteLine("Benford Distribution \t Your Distribution \t Difference ");
+                Console.WriteLine("All Numbers:", AllNumbers);
+                int counter = 0;
                 for (int i = 0; i <= benford.Length - 1; i++)
                 {
-                    Console.WriteLine("{0}: {1} % \t\t {2}: {3} %  \t\t {4}: {5} %",i+1, benford[i], i+1, digits[i], i+1,i);
+                    if (difference[i] < 2 )
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("{0}: {1} % \t\t {2}: {3} %  \t\t {4}: {5} %", i + 1, benford[i], i + 1, digits[i], i + 1, difference[i]);
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                    }
+                    else
+                    {
+                        counter += 1;
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("{0}: {1} % \t\t {2}: {3} %  \t\t {4}: {5} %", i + 1, benford[i], i + 1, digits[i], i + 1, difference[i]);
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                    }
                 }
+                Console.WriteLine("In {0} cases there are differences:", counter);
             }
 
+            public double[] CalculateDifference(double[] benford, double[] digits)
+            {
+                double[] difference = new double[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                for (int k = 0; k < benford.Length; k++)
+                {
+                    difference[k] = Math.Round(Math.Abs(benford[k] - digits[k]), 1);
+                }
+                return difference;
+            }
 
             static void Main(string[] args)
             {
@@ -232,28 +249,8 @@ namespace BenfordSet
                 //pdf.SetFilename(filename);
                 pdf.CheckFolder();
                 pdf.CheckFile();
-                ///pdf.ReadPdf();
-                ///                
-                using (PdfDocument document = PdfDocument.Open(@"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\2012_Book_FEM.pdf"))
-                {
-                    //string rawText = "";
-                    foreach (Page page in document.GetPages())
-                    {
-                        IReadOnlyList<Letter> letters = page.Letters;
-                        string example = string.Join(string.Empty, letters.Select(x => x.Value));
-                        IEnumerable<Word> words = page.GetWords();
-                        string rawText = "";
-                        rawText += page.Text;
-                        pdf.PdfContent += rawText;
-                        IEnumerable<IPdfImage> images = page.GetImages();
-                        pdf.PdfContent += rawText;
-                    }
-                   
-                    
-                    pdf.CountNumbers(pdf.PdfContent);
-                    ///pdf.BenfordNumbers();
-                }
-
+                pdf.GetPdfContent();            
+                pdf.CountNumbers(pdf.PdfContent);
             }
         }
     }
