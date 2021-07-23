@@ -209,7 +209,7 @@ namespace BenfordSet
                 int counter = 0;
                 for (int i = 0; i <= benford.Length - 1; i++)
                 {
-                    if (difference[i] < 2 )
+                    if (difference[i] < 1.5 )
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("{0}: {1} % \t\t {2}: {3} %  \t\t {4}: {5} %", i + 1, benford[i], i + 1, digits[i], i + 1, difference[i]);
@@ -224,6 +224,32 @@ namespace BenfordSet
                     }
                 }
                 Console.WriteLine("In {0} cases there are differences:", counter);
+
+                if (counter == 0 )
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("###########################");
+                    Console.WriteLine("Status: Looks good.");
+                    Console.WriteLine("###########################");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+                else if (counter > 1 || counter <= 3 )
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine("###########################");
+                    Console.WriteLine("Status: Might be ok.");
+                    Console.WriteLine("###########################");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("###########################################################");
+                    Console.WriteLine("Status: You should take a closer look to the numbers.");
+                    Console.WriteLine("###########################################################");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
             }
 
             public double[] CalculateDifference(double[] benford, double[] digits)
