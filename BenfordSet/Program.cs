@@ -12,18 +12,23 @@ namespace BenfordSet
     {
         class GetPdf
         {
-            public string Filename { get; private set; }                 //{ 
+            private string Filename { get;  set; }                 //{ 
                 //    if (!String.IsNullOrEmpty(value))
                 //        Filename = value; 
                 //} 
             
-            public string Foldername { get; private set; }
+            private string Foldername { get; set; }
             public string PdfContent { get; set; }
 
             public void ReadPdf() 
             {
                 string content = System.IO.File.ReadAllText(Foldername + Filename);
                 this.PdfContent = content;
+            }
+
+            public string GetFilename()
+            {
+                return this.Filename;
             }
 
             public void SetFoldername(string value)
@@ -42,6 +47,16 @@ namespace BenfordSet
                     Console.WriteLine("Enter a filename");
             }
             public int AllNumbers { get; private set; }
+
+            public int GetAllNumbers()
+            {
+                return this.AllNumbers;
+            }
+
+            public void SetAllNumbersToZero()
+            {
+                this.AllNumbers = 0;
+            }
 
 
             public bool CheckFolder() ///(string foldername)
@@ -122,8 +137,8 @@ namespace BenfordSet
             public void CountNumbers(string raw)
             {
                 int[] numbers = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-                int AllNumbers = 0;
-
+                //int AllNumbers = 0;
+                SetAllNumbersToZero();
                 Regex regex = new Regex(@"[0-9]*[0-9]");
 
                 foreach (Match match in regex.Matches(raw))
@@ -163,11 +178,12 @@ namespace BenfordSet
                 //    Console.WriteLine("Anzahl der Zahl {0}: {1}", i, numbers[i - 1]);
                 //}
                 //Console.WriteLine("All numbers in the file: {0}", AllNumbers);
-                CalculateDistribution(numbers, AllNumbers);
+                CalculateDistribution(numbers); ///, AllNumbers);
             }
 
-            public void CalculateDistribution(int[] numbers, int AllNumbers)
+            public void CalculateDistribution(int[] numbers) ///, int AllNumbers)
             {
+                
                 double[] digits = new double[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
                 double[] convertNumbers = new double[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
@@ -176,11 +192,11 @@ namespace BenfordSet
                     convertNumbers[z] = (double)numbers[z];
                 }
 
-                if(AllNumbers != 0)
+                if(GetAllNumbers() != 0)
                 {
                     for (int k = 0; k <= 8; k++)
                     {
-                        digits[k] = Math.Round(convertNumbers[k] / AllNumbers * 100, 1);
+                        digits[k] = Math.Round(convertNumbers[k] / GetAllNumbers() * 100, 1);
                     }
                 }        
                 else
@@ -204,8 +220,9 @@ namespace BenfordSet
 
             public void PrinResults(double[] benford, double[] digits, double[] difference)
             {
+                Console.WriteLine("All Numbers:\t {0}", GetAllNumbers());
+                Console.WriteLine("Filename:\t {0} ", GetFilename());
                 Console.WriteLine("Benford Distribution \t Your Distribution \t Difference ");
-                Console.WriteLine("All Numbers:", AllNumbers);
                 int counter = 0;
                 for (int i = 0; i <= benford.Length - 1; i++)
                 {
@@ -223,7 +240,7 @@ namespace BenfordSet
                         Console.ForegroundColor = ConsoleColor.Gray;
                     }
                 }
-                Console.WriteLine("In {0} cases there are differences:", counter);
+                Console.WriteLine("There are differences in {0} cases:", counter);
 
                 if (counter == 0 )
                 {
