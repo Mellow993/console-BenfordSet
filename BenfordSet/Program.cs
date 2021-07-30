@@ -254,7 +254,7 @@ namespace BenfordSet
                     ResultMessage("Status: Might be ok.");
 
                 }
-                else if (counter > 6)
+                else if (counter >= 6)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     ResultMessage("Status: You should take a closer look to the numbers.");
@@ -311,9 +311,15 @@ namespace BenfordSet
 
             static void Main(string[] args)
             {
-                Console.WriteLine("Analyse Pdf"); 
+                Console.WriteLine("Analyse Pdf");
+                /// 2013_Book_CFD-Modellierung.pdf
+                /// 2014_Book_SystemeVonTurbofan-Triebwerken.pdf
+                /// Effective_Python_(2015).pdf
                 string fld = @"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\";
-                string file = "2012_Book_FEM.pdf";
+                //string file = "2012_Book_FEM.pdf";                        /// positives Beispiel
+                //string file = "2015_Book_HandbuchVerbrennungsmotor.pdf";    /// mittel
+                string file = "2018_Book_AufgabenUndLösungsmethodikTech.pdf";  /// negatives Bespiel 
+
                 GetPdf pdf = new GetPdf(fld, file);
 
                 pdf.CheckFolder();
