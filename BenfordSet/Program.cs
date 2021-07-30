@@ -5,6 +5,7 @@ using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics; ///.Process.Start;
 
 namespace BenfordSet
 {
@@ -12,20 +13,20 @@ namespace BenfordSet
     {
         class GetPdf
         {
-            private string Filename { get;  set; }                 //{ 
-                //    if (!String.IsNullOrEmpty(value))
-                //        Filename = value; 
-                //} 
-            
-            private string Foldername { get; set; }
-            public string PdfContent { get; set; }
-
-            public void ReadPdf() 
+            public GetPdf(string foldername, string filename)
             {
-                string content = System.IO.File.ReadAllText(Foldername + Filename);
-                this.PdfContent = content;
+                this.Foldername = foldername;
+                this.Filename = filename;
             }
 
+            public string Filename { get; set; }
+
+            public string Foldername { get; set; }
+       
+            public string PdfContent { get; set; }
+            public string GetFullPath {
+                get { return string.Format("{0}{1}", this.Foldername, this.Filename); }
+            }
             public string GetFilename()
             {
                 return this.Filename;
@@ -41,27 +42,29 @@ namespace BenfordSet
 
             public void SetFilename(string value)
             {
-                if(!String.IsNullOrEmpty(value))
-                    this.Filename = value; ///"2012_Book_FEM.pdf";
+                if (!String.IsNullOrEmpty(value))
+                    this.Filename = value;
                 else
                     Console.WriteLine("Enter a filename");
             }
             public int AllNumbers { get; private set; }
 
-            public int GetAllNumbers()
-            {
-                return this.AllNumbers;
-            }
+            //public int GetAllNumbers()
+            //{
+            //    return this.AllNumbers;
+            //}
 
             public void SetAllNumbersToZero()
             {
                 this.AllNumbers = 0;
             }
 
+            public int GetPageNumber { get; set; }
+
 
             public bool CheckFolder() ///(string foldername)
             {
-                this.Foldername = @"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\";
+                //this.Foldername = @"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\";
 
                 if(String.IsNullOrEmpty(Foldername))
                 {
@@ -91,7 +94,7 @@ namespace BenfordSet
 
             public bool CheckFile() ///(string filename)
             {
-                this.Filename = "2012_Book_FEM.pdf";
+                //this.Filename = "2012_Book_FEM.pdf";
                 if (String.IsNullOrEmpty(Filename))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -119,17 +122,17 @@ namespace BenfordSet
 
             public void GetPdfContent()
             {
-                using (PdfDocument document = PdfDocument.Open(@"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\2012_Book_FEM.pdf"))
+                using (PdfDocument document = PdfDocument.Open(@GetFullPath)) ///@"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\2012_Book_FEM.pdf"))
                 {
+                    
                     foreach (Page page in document.GetPages())
                     {
                         IReadOnlyList<Letter> letters = page.Letters;
                         string example = string.Join(string.Empty, letters.Select(x => x.Value));
                         IEnumerable<Word> words = page.GetWords();
-                        string rawText = "";
-                        rawText += page.Text;
-                        PdfContent += rawText;
+                        PdfContent += page.Text;
                         IEnumerable<IPdfImage> images = page.GetImages();
+                        GetPageNumber = page.Number;
                     }
                 }
             }
@@ -137,13 +140,12 @@ namespace BenfordSet
             public void CountNumbers(string raw)
             {
                 int[] numbers = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-                //int AllNumbers = 0;
                 SetAllNumbersToZero();
-                Regex regex = new Regex(@"[0-9]*[0-9]");
+                Regex regex = new Regex(@"[1-9]*[1-9]");
 
                 foreach (Match match in regex.Matches(raw))
                 {
-                    AllNumbers += 1; 
+                    AllNumbers += 1;
                     if (match.Value.StartsWith("1"))
                         numbers[0] += 1;
 
@@ -170,14 +172,10 @@ namespace BenfordSet
 
                     else if (match.Value.StartsWith("9"))
                         numbers[8] += 1;
+                    else
+                        Console.WriteLine("dont knooowww");
 
                 }
-
-                //for (int i = 1; i <= 9; i++)
-                //{
-                //    Console.WriteLine("Anzahl der Zahl {0}: {1}", i, numbers[i - 1]);
-                //}
-                //Console.WriteLine("All numbers in the file: {0}", AllNumbers);
                 CalculateDistribution(numbers); ///, AllNumbers);
             }
 
@@ -192,11 +190,11 @@ namespace BenfordSet
                     convertNumbers[z] = (double)numbers[z];
                 }
 
-                if(GetAllNumbers() != 0)
+                if(AllNumbers != 0)
                 {
                     for (int k = 0; k <= 8; k++)
                     {
-                        digits[k] = Math.Round(convertNumbers[k] / GetAllNumbers() * 100, 1);
+                        digits[k] = Math.Round(convertNumbers[k] / AllNumbers * 100, 1);
                     }
                 }        
                 else
@@ -217,12 +215,15 @@ namespace BenfordSet
 
             }
 
-
             public void PrinResults(double[] benford, double[] digits, double[] difference)
             {
-                Console.WriteLine("All Numbers:\t {0}", GetAllNumbers());
-                Console.WriteLine("Filename:\t {0} ", GetFilename());
-                Console.WriteLine("Benford Distribution \t Your Distribution \t Difference ");
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.WriteLine("Filename:\t {0} ", Filename); 
+                Console.WriteLine("Page Numbers:\t {0}", GetPageNumber);
+                Console.WriteLine("All Numbers:\t {0}", AllNumbers);
+
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.WriteLine("\nBenford Distribution \t Your Distribution \t Difference ");
                 int counter = 0;
                 for (int i = 0; i <= benford.Length - 1; i++)
                 {
@@ -240,33 +241,38 @@ namespace BenfordSet
                         Console.ForegroundColor = ConsoleColor.Gray;
                     }
                 }
-                Console.WriteLine("There are differences in {0} cases:", counter);
+                Console.WriteLine("\nThere are differences in {0} cases:\n", counter);
 
-                if (counter == 0 )
+                if (counter <= 3 )
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("###########################");
-                    Console.WriteLine("Status: Looks good.");
-                    Console.WriteLine("###########################");
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    ResultMessage("Status: Might be ok.");
                 }
-                else if (counter > 1 || counter <= 3 )
+                else if (counter == 4 || counter == 5 )
                 {
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
-                    Console.WriteLine("###########################");
-                    Console.WriteLine("Status: Might be ok.");
-                    Console.WriteLine("###########################");
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    ResultMessage("Status: Might be ok.");
 
+                }
+                else if (counter > 6)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    ResultMessage("Status: You should take a closer look to the numbers.");
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("###########################################################");
-                    Console.WriteLine("Status: You should take a closer look to the numbers.");
-                    Console.WriteLine("###########################################################");
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    ResultMessage("Status: Error while computing.");
                 }
+            }
+
+            public void ResultMessage(string text)
+            {
+                Console.WriteLine("###########################################################");
+                Console.WriteLine(text);
+                Console.WriteLine("###########################################################");
+                Console.ForegroundColor = ConsoleColor.Gray;
+
             }
 
             public double[] CalculateDifference(double[] benford, double[] digits)
@@ -279,22 +285,51 @@ namespace BenfordSet
                 return difference;
             }
 
+
+            public void GetHelpOrQuit()
+            {
+                while (true)
+                {
+                    Console.WriteLine("To get more Information about the Benford set enter \"help\" otherwise enter \"exit\" to quit the programm.");
+                    string enterOrder = Console.ReadLine().ToLower();
+                    if (enterOrder == "help")
+                    {
+                        var psi = new ProcessStartInfo
+                        {
+                            FileName = "https://en.wikipedia.org/wiki/Benford%27s_law",
+                            UseShellExecute = true
+                        };
+                        Process.Start(psi);
+                    }
+                    else if (enterOrder == "exit")
+                        Environment.Exit(0);
+                    else
+                        Console.WriteLine("Dont now what to do");
+                }
+
+            }
+
             static void Main(string[] args)
             {
-                Console.WriteLine("Analyse Pdf");
-                //string fld = @"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\";
-                //string fil = "zahlen.txt";
-                GetPdf pdf = new GetPdf();
-                //Console.WriteLine("Enter folder path and file name");
-                //string foldername = Console.ReadLine();
-                //string filename = Console.ReadLine();
-                //pdf.SetFoldername(foldername);
-                //pdf.SetFilename(filename);
+                Console.WriteLine("Analyse Pdf"); 
+                string fld = @"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\";
+                string file = "2012_Book_FEM.pdf";
+                GetPdf pdf = new GetPdf(fld, file);
+
                 pdf.CheckFolder();
                 pdf.CheckFile();
-                pdf.GetPdfContent();            
+                pdf.GetPdfContent();
                 pdf.CountNumbers(pdf.PdfContent);
+                //pdf.GetHelpOrQuit();
             }
         }
     }
 }
+
+
+
+//Console.WriteLine("Enter folder path and file name");
+//string foldername = Console.ReadLine();
+//string filename = Console.ReadLine();
+//pdf.SetFoldername(foldername);
+//pdf.SetFilename(filename);
