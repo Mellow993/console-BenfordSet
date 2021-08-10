@@ -6,25 +6,27 @@ using UglyToad.PdfPig.Content;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics; ///.Process.Start;
+using System.Threading;
 
 namespace BenfordSet
 {
     class Programs
     {
-        class GetPdf
+
+        class GetPdf // keine nested classes get pdf raus
         {
-            public GetPdf(string foldername, string filename)
+            public GetPdf(string foldername, string filename, double threshold)
             {
                 this.Foldername = foldername;
                 this.Filename = filename;
+                this.Threshold = threshold;
             }
-
             public string Filename { get; set; }
-
             public string Foldername { get; set; }
-       
             public string PdfContent { get; set; }
-            public string GetFullPath {
+            public double Threshold { get; set; }
+            public string GetFullPath
+            {
                 get { return string.Format("{0}{1}", this.Foldername, this.Filename); }
             }
             public string GetFilename()
@@ -49,11 +51,6 @@ namespace BenfordSet
             }
             public int AllNumbers { get; private set; }
 
-            //public int GetAllNumbers()
-            //{
-            //    return this.AllNumbers;
-            //}
-
             public void SetAllNumbersToZero()
             {
                 this.AllNumbers = 0;
@@ -64,8 +61,6 @@ namespace BenfordSet
 
             public bool CheckFolder() ///(string foldername)
             {
-                //this.Foldername = @"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\";
-
                 if(String.IsNullOrEmpty(Foldername))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -75,7 +70,7 @@ namespace BenfordSet
                     Environment.Exit(1);
                 }
 
-                if (System.IO.Directory.Exists(Foldername)) ///(foldername))
+                if (System.IO.Directory.Exists(Foldername)) 
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("The folder exits");
@@ -87,14 +82,13 @@ namespace BenfordSet
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("The folder doesn't exits");
                     Console.ForegroundColor = ConsoleColor.Gray;
-                    Environment.Exit(1);
+                    Environment.Exit(1); // ein environment return 0 oder 1
                     return false;
                 }
             }
 
-            public bool CheckFile() ///(string filename)
+            public bool CheckFile() 
             {
-                //this.Filename = "2012_Book_FEM.pdf";
                 if (String.IsNullOrEmpty(Filename))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -127,11 +121,11 @@ namespace BenfordSet
                     
                     foreach (Page page in document.GetPages())
                     {
-                        IReadOnlyList<Letter> letters = page.Letters;
-                        string example = string.Join(string.Empty, letters.Select(x => x.Value));
-                        IEnumerable<Word> words = page.GetWords();
+                        //IReadOnlyList<Letter> letters = page.Letters;
+                        //string example = string.Join(string.Empty, letters.Select(x => x.Value));
+                        //IEnumerable<Word> words = page.GetWords();
                         PdfContent += page.Text;
-                        IEnumerable<IPdfImage> images = page.GetImages();
+                        //IEnumerable<IPdfImage> images = page.GetImages();
                         GetPageNumber = page.Number;
                     }
                 }
@@ -141,11 +135,12 @@ namespace BenfordSet
             {
                 int[] numbers = new int[9] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
                 SetAllNumbersToZero();
-                Regex regex = new Regex(@"[1-9]*[1-9]");
+                Regex regex = new Regex(@"[1-9]*[1-9]"); /// *[1-9]"); [1-9]+
 
                 foreach (Match match in regex.Matches(raw))
                 {
                     AllNumbers += 1;
+
                     if (match.Value.StartsWith("1"))
                         numbers[0] += 1;
 
@@ -217,17 +212,19 @@ namespace BenfordSet
 
             public void PrinResults(double[] benford, double[] digits, double[] difference)
             {
+                ///Threshold = 1.5;
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("Filename:\t {0} ", Filename); 
                 Console.WriteLine("Page Numbers:\t {0}", GetPageNumber);
                 Console.WriteLine("All Numbers:\t {0}", AllNumbers);
+                Console.WriteLine("Threshold:\t {0} %", Threshold);
 
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.WriteLine("\nBenford Distribution \t Your Distribution \t Difference ");
                 int counter = 0;
                 for (int i = 0; i <= benford.Length - 1; i++)
                 {
-                    if (difference[i] < 1.5 )
+                    if (difference[i] < Threshold)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("{0}: {1} % \t\t {2}: {3} %  \t\t {4}: {5} %", i + 1, benford[i], i + 1, digits[i], i + 1, difference[i]);
@@ -268,9 +265,9 @@ namespace BenfordSet
 
             public void ResultMessage(string text)
             {
-                Console.WriteLine("###########################################################");
+                Console.WriteLine(new string('#', 59));
                 Console.WriteLine(text);
-                Console.WriteLine("###########################################################");
+                Console.WriteLine(new string('#', 59));
                 Console.ForegroundColor = ConsoleColor.Gray;
 
             }
@@ -285,48 +282,27 @@ namespace BenfordSet
                 return difference;
             }
 
-
-            public void GetHelpOrQuit()
+            static int Main(string[] args)
             {
-                while (true)
-                {
-                    Console.WriteLine("To get more Information about the Benford set enter \"help\" otherwise enter \"exit\" to quit the programm.");
-                    string enterOrder = Console.ReadLine().ToLower();
-                    if (enterOrder == "help")
-                    {
-                        var psi = new ProcessStartInfo
-                        {
-                            FileName = "https://en.wikipedia.org/wiki/Benford%27s_law",
-                            UseShellExecute = true
-                        };
-                        Process.Start(psi);
-                    }
-                    else if (enterOrder == "exit")
-                        Environment.Exit(0);
-                    else
-                        Console.WriteLine("Dont now what to do");
-                }
-
-            }
-
-            static void Main(string[] args)
-            {
-                Console.WriteLine("Analyse Pdf");
-                /// 2013_Book_CFD-Modellierung.pdf
-                /// 2014_Book_SystemeVonTurbofan-Triebwerken.pdf
-                /// Effective_Python_(2015).pdf
+                Userinterface ui = new Userinterface();
+                string file = "2018_Book_AufgabenUndLösungsmethodikTech.pdf";  /// negatives Bespiel 
                 string fld = @"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\";
                 //string file = "2012_Book_FEM.pdf";                        /// positives Beispiel
                 //string file = "2015_Book_HandbuchVerbrennungsmotor.pdf";    /// mittel
-                string file = "2018_Book_AufgabenUndLösungsmethodikTech.pdf";  /// negatives Bespiel 
+                Check check = new Check("test");
 
-                GetPdf pdf = new GetPdf(fld, file);
+                check.CheckSource(fld + file);
 
+                double threshold = 1.5;
+
+                GetPdf pdf = new GetPdf(fld, file, threshold);
+                check.FileIsPdf(fld + file);
                 pdf.CheckFolder();
                 pdf.CheckFile();
                 pdf.GetPdfContent();
                 pdf.CountNumbers(pdf.PdfContent);
                 //pdf.GetHelpOrQuit();
+                return 0;
             }
         }
     }
