@@ -2,6 +2,7 @@
   "profiles": {
     "BenfordSet": {
       "commandName": "Project",
+      "commandLineArgs": "\"C:\\Users\\rennd\\OneDrive\\Dokumente\\Bücher\\StrukturDynamik\\2018_Book_AufgabenUndLösungsmethodikTech.pdf\"",
       "workingDirectory": "C:\\Users\\rennd\\OneDrive\\Dokumente\\Beruf\\CS\\BenfordSet"
     }
   }

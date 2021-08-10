@@ -284,25 +284,31 @@ namespace BenfordSet
 
             static int Main(string[] args)
             {
-                Userinterface ui = new Userinterface();
-                string file = "2018_Book_AufgabenUndLösungsmethodikTech.pdf";  /// negatives Bespiel 
-                string fld = @"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\";
-                //string file = "2012_Book_FEM.pdf";                        /// positives Beispiel
-                //string file = "2015_Book_HandbuchVerbrennungsmotor.pdf";    /// mittel
-                Check check = new Check("test");
+                Error error = new Error();
+                error.NoStringno();
+                Console.WriteLine(args[0]);
+                Check check = new Check(args[0]);
+                if (check.CheckSource() && check.FileIsPdf() && check.HasReadAccess())
+                {
+                    /// continue at this point
+                    return 0;
+                }
+                else
+                {
+                    error.Terminate();
+                    return 1;
 
-                check.CheckSource(fld + file);
+                }
+                //check.CheckSource(fld + file);
 
-                double threshold = 1.5;
-
-                GetPdf pdf = new GetPdf(fld, file, threshold);
-                check.FileIsPdf(fld + file);
-                pdf.CheckFolder();
-                pdf.CheckFile();
-                pdf.GetPdfContent();
-                pdf.CountNumbers(pdf.PdfContent);
-                //pdf.GetHelpOrQuit();
-                return 0;
+                ///
+                //GetPdf pdf = new GetPdf(fld, file, threshold);
+                //check.FileIsPdf(fld + file);
+                //pdf.CheckFolder();
+                //pdf.CheckFile();
+                //pdf.GetPdfContent();
+                //pdf.CountNumbers(pdf.PdfContent);
+                ////pdf.GetHelpOrQuit();
             }
         }
     }
@@ -315,3 +321,9 @@ namespace BenfordSet
 //string filename = Console.ReadLine();
 //pdf.SetFoldername(foldername);
 //pdf.SetFilename(filename);
+
+
+//string file = "2018_Book_Aufgaben UndLösungsmethodikTech.pdf";  /// negatives Bespiel 
+//string fld = @"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\";
+//string file = "2012_Book_FEM.pdf";                        /// positives Beispiel
+//string file = "2015_Book_HandbuchVerbrennungsmotor.pdf";    /// mittel

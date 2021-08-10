@@ -5,7 +5,7 @@ using System.IO;
 
 namespace BenfordSet
 {
-    abstract internal  class Datainput
+    abstract class Datainput
     {
         // Konstruktor
 
@@ -30,10 +30,9 @@ namespace BenfordSet
             }
         }
 
-        abstract public void CheckSource(string file);
-        abstract public void HasReadAccess(string file);
-
-        abstract public void FileIsPdf(string file);
+        abstract public bool CheckSource(); ///string file);
+        abstract public bool HasReadAccess(); /// (string file);
+        abstract public bool FileIsPdf();//// (string file);
     }
 
     class Check : Datainput
@@ -45,31 +44,52 @@ namespace BenfordSet
         Userinterface ui = new Userinterface();
         //FileInfo test = new FileInfo();
 
-        public override void CheckSource(string file)///(string file)
+        public override bool CheckSource() ///(string file)
         {
-            if (File.Exists(file))
+            if (File.Exists(Source))
+            {
                 info.CheckFile();
+                return true;
+            }
+
             else
+            {
                 error.NoFile();
+                return false;
+            }
+
         }
 
-        public override void HasReadAccess(string file)
+        public override bool HasReadAccess() /// (string file)
         {
-            FileInfo fi = new FileInfo(file);
+            FileInfo fi = new FileInfo(Source);
             if (!fi.IsReadOnly)
+            {
                 info.CheckFileIsReadable();
+                return true;
+            }
             else
+            {
                 error.NotReadable();
-        }
-        public override void FileIsPdf(string file)
-        {
-            FileInfo fi = new FileInfo(file);
+                return false;
+            }
 
-            //File
+        }
+        public override bool FileIsPdf()
+        {
+            FileInfo fi = new FileInfo(Source);
+
             if (fi.Extension.Contains("pdf"))
+            {
                 info.CheckExtension();
+                return true;
+            }
             else
+            {
                 error.NoPdf();
+                return false;
+            }
+
         }
     }
 
