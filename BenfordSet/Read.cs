@@ -1,29 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using UglyToad.PdfPig;
+using UglyToad.PdfPig.Content;
 
 namespace BenfordSet
 {
-    class Read
+    abstract class Read
     {
+        public string Source { get; set; }
         public int GetPageNumber { get; set; }
-        // use events or threads to make the programm fast
+        public string Content { get; set; }
 
-        //public void GetPdfContent()
-        //{
-        //    using (PdfDocument document = PdfDocument.Open(@GetFullPath)) ///@"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\2012_Book_FEM.pdf"))
-        //    {
+        abstract public void GetContent();
 
-        //        foreach (Page page in document.GetPages())
-        //        {
-        //            //IReadOnlyList<Letter> letters = page.Letters;
-        //            //string example = string.Join(string.Empty, letters.Select(x => x.Value));
-        //            //IEnumerable<Word> words = page.GetWords();
-        //            PdfContent += page.Text;
-        //            //IEnumerable<IPdfImage> images = page.GetImages();
-        //            GetPageNumber = page.Number;
-        //        }
-        //    }
-        //}
+    }
+    class Readpdf : Read
+    {
+        public Readpdf(string content)
+        {
+            this.Content = content;
+        }
+        override public void GetContent()
+        {
+            using (PdfDocument document = PdfDocument.Open(Content)) ///@"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\2012_Book_FEM.pdf"))
+            {
+
+                foreach (Page page in document.GetPages())
+                {
+                    //IReadOnlyList<Letter> letters = page.Letters;
+                    //string example = string.Join(string.Empty, letters.Select(x => x.Value));
+                    //IEnumerable<Word> words = page.GetWords();
+                    Content += page.Text;
+                    //IEnumerable<IPdfImage> images = page.GetImages();
+                    GetPageNumber = page.Number;
+                }
+                Console.WriteLine(Content);
+            }
+        }
+    }
+
+    class Readtextfile : Read
+    {
+        public override void GetContent()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    class Readwordfile : Read
+    {
+        public override void GetContent()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

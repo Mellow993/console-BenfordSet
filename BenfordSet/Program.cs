@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Text.RegularExpressions;
-using UglyToad.PdfPig;
-using UglyToad.PdfPig.Content;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics; ///.Process.Start;
@@ -114,22 +113,22 @@ namespace BenfordSet
                 }     
             }
 
-            public void GetPdfContent()
-            {
-                using (PdfDocument document = PdfDocument.Open(@GetFullPath)) ///@"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\2012_Book_FEM.pdf"))
-                {
+            //public void GetPdfContent()
+            //{
+            //    using (PdfDocument document = PdfDocument.Open(@GetFullPath)) ///@"C:\Users\rennd\OneDrive\Dokumente\Bücher\StrukturDynamik\2012_Book_FEM.pdf"))
+            //    {
                     
-                    foreach (Page page in document.GetPages())
-                    {
-                        //IReadOnlyList<Letter> letters = page.Letters;
-                        //string example = string.Join(string.Empty, letters.Select(x => x.Value));
-                        //IEnumerable<Word> words = page.GetWords();
-                        PdfContent += page.Text;
-                        //IEnumerable<IPdfImage> images = page.GetImages();
-                        GetPageNumber = page.Number;
-                    }
-                }
-            }
+            //        foreach (Page page in document.GetPages())
+            //        {
+            //            //IReadOnlyList<Letter> letters = page.Letters;
+            //            //string example = string.Join(string.Empty, letters.Select(x => x.Value));
+            //            //IEnumerable<Word> words = page.GetWords();
+            //            PdfContent += page.Text;
+            //            //IEnumerable<IPdfImage> images = page.GetImages();
+            //            GetPageNumber = page.Number;
+            //        }
+            //    }
+            //}
 
             public void CountNumbers(string raw)
             {
@@ -285,12 +284,13 @@ namespace BenfordSet
             static int Main(string[] args)
             {
                 Error error = new Error();
-                error.NoStringno();
-                Console.WriteLine(args[0]);
                 Check check = new Check(args[0]);
+                error.NoStringno();
+
                 if (check.CheckSource() && check.FileIsPdf() && check.HasReadAccess())
                 {
-                    /// continue at this point
+                    Readpdf read = new Readpdf(args[0]);
+                    read.GetContent();
                     return 0;
                 }
                 else
