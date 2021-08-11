@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BenfordSet
 {
-    class Analyse
+    abstract class Analyse
     {
         public int AllNumbers { get; set; }
         public void  CalculateDistribution()
@@ -19,4 +19,12 @@ namespace BenfordSet
             return difference;
         }
     }
+
+    class GetNumberDistribution : Analyse
+    {
+
+    }
+
+    // Zählen und REchnen teilen?
+    // klasse zählen
 }
