@@ -10,15 +10,25 @@ namespace BenfordSet
     /// partion the output information.
     /// </summary>
 
-    internal struct Error //: Userinterface
+    class Userinterface
     {
+
+    }
+
+    internal class Error //: Userinterface
+    {
+
+        public Error() { }
+        public static readonly Error error = new Error();
         public void NoFile()
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("No File available");
             Console.ResetColor();
         }
         public void NoAcess()
         {
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("No access to file");
             Console.ResetColor();
         }
@@ -57,7 +67,7 @@ namespace BenfordSet
         }
     }
 
-    internal struct Info //: Error
+    internal class Info : Error
     {
         public void Welcome()
         {
@@ -79,14 +89,17 @@ namespace BenfordSet
             Console.WriteLine("File is readable");
             Console.ResetColor();
         }
+        public void Finish()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Finish");
+            Console.ResetColor();
+
+        }
     }
 
-    internal struct Results //: Userinterface
+    internal class Results // : Userinterface
     {
-        public void Table()
-        {
-            throw new NotImplementedException();
-        }
         public void BenfordDistribution()
         {
             throw new NotImplementedException();
@@ -114,13 +127,66 @@ namespace BenfordSet
 
         }
 
-        public void ResultMessage(string text)
+        //public void ResultMessage();/// (string text)
+        //{
+        //    Console.WriteLine(new string('#', 59));
+        //    Console.WriteLine("hi");
+        //    Console.WriteLine(new string('#', 59));
+        //    Console.ForegroundColor = ConsoleColor.Gray;
+        //}
+
+        public void PrinResults()///(double[] benford, double[] digits, double[] difference)
         {
-            Console.WriteLine(new string('#', 59));
-            Console.WriteLine(text);
-            Console.WriteLine(new string('#', 59));
+            ///Threshold = 1.5;
+            Console.ForegroundColor = ConsoleColor.Blue;
+            //Console.WriteLine("Filename:\t {0} ", Filename);
+            //Console.WriteLine("Page Numbers:\t {0}", GetPageNumber);
+            //Console.WriteLine("All Numbers:\t {0}", AllNumbers);
+            //Console.WriteLine("Threshold:\t {0} %", Threshold);
+
             Console.ForegroundColor = ConsoleColor.Gray;
-        }
+            Console.WriteLine("\nBenford Distribution \t Your Distribution \t Difference ");
+            //int counter = 0;
+            //for (int i = 0; i <= benford.Length - 1; i++)
+            //{
+            //    if (Difference[i] < Threshold)
+            //    {
+            //        Console.ForegroundColor = ConsoleColor.Green;
+            //        Console.WriteLine("{0}: {1} % \t\t {2}: {3} %  \t\t {4}: {5} %", i + 1, benford[i], i + 1, digits[i], i + 1, difference[i]);
+            //        Console.ForegroundColor = ConsoleColor.Gray;
+            //    }
+                //    else
+                //    {
+                //        counter += 1;
+                //        Console.ForegroundColor = ConsoleColor.Red;
+                //        Console.WriteLine("{0}: {1} % \t\t {2}: {3} %  \t\t {4}: {5} %", i + 1, benford[i], i + 1, digits[i], i + 1, difference[i]);
+                //        Console.ForegroundColor = ConsoleColor.Gray;
+                //    }
+                //}
+                //Console.WriteLine("\nThere are differences in {0} cases:\n", counter);
+
+                //if (counter <= 3)
+                //{
+                //    Console.ForegroundColor = ConsoleColor.Green;
+                //    ResultMessage("Status: Might be ok.");
+                //}
+                //else if (counter == 4 || counter == 5)
+                //{
+                //    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                //    ResultMessage("Status: Might be ok.");
+
+                //}
+                //else if (counter >= 6)
+                //{
+                //    Console.ForegroundColor = ConsoleColor.Red;
+                //    ResultMessage("Status: You should take a closer look to the numbers.");
+                //}
+                //else
+                //{
+                //    Console.ForegroundColor = ConsoleColor.Red;
+                //    ResultMessage("Status: Error while computing.");
+                //}
+            }
 
         //public void FileInformations(double[] benford, double[] digits, double[] difference)
         //{
