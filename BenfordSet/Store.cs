@@ -18,6 +18,7 @@ namespace BenfordSet
             throw new NotImplementedException();
         }
     }
+
     class WriteToTextFile : WriteToHardDrive
     {
         public override void Save(string destination)
@@ -25,6 +26,7 @@ namespace BenfordSet
             throw new NotImplementedException();
         }
     }
+
     class CreatePdfFile : WriteToHardDrive
     {
         public override void Save(string destination)
@@ -32,6 +34,7 @@ namespace BenfordSet
             throw new NotImplementedException();
         }
     }
+
     class WriteToCloud : Export
     {
         public override void Save(string destination)
@@ -39,6 +42,7 @@ namespace BenfordSet
             throw new NotImplementedException();
         }
     }
+
     class WriteToFTP : Export
     {
         public override void Save(string destination)

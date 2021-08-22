@@ -5,197 +5,201 @@ using System.Text;
 namespace BenfordSet
 {
     /// <summary>
-    /// Struct <c>Userinterface</c> provides the console output.
     /// The structs like <c>Error</c>, <c>Info</c> and <c>Results</c>
     /// partion the output information.
     /// </summary>
 
+
     class Userinterface
     {
-
-    }
-
-    internal class Error //: Userinterface
-    {
-
-        public Error() { }
-        public static readonly Error error = new Error();
-        public void NoFile()
+        public ConsoleColor Color { get; set; }
+        public void Hallo()
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("No File available");
-            Console.ResetColor();
-        }
-        public void NoAcess()
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("No access to file");
-            Console.ResetColor();
-        }
-        public void NoPdf()
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("The file has the wrong extension");
-            Console.ResetColor();
-        }
-        internal void NotReadable()
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("File is not readable");
-            Console.ResetColor();
-        }
-        public void Terminate()
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("The programm will be terminated due to erros");
-            Console.ResetColor();
-        }
-
-        public void Exceptions(string message)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(message);
-            Console.ResetColor();
-
-        }
-
-        public void NoNumbers()
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("No numbers in the file");
-            Console.ResetColor();
+            Console.WriteLine("Hallo how can I call that?");
         }
     }
 
-    internal class Info : Error
+
+    #region "Error Outputs"
+    static internal class Error 
     {
-        public void Welcome()
+        static public string OutputError()
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Start the Benford analysis");
+            return "Error: ";
+        }
+
+        static public void NoObject()
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(OutputError() + "NO OBJECT AVAILABLE");
             Console.ResetColor();
         }
-        public void CheckFile()
+        static public void NoFile()
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("File is available");
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(OutputError() + "NO FILE AVAILABLE");
         }
-        public void CheckExtension()
+        static public void NoAcess()
         {
-            Console.WriteLine("File is pdf");
-        }
-        public void CheckFileIsReadable()
-        {
-            Console.WriteLine("File is readable");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(OutputError() + "NO ACCESS TO THE FILE");
             Console.ResetColor();
         }
-        public void Finish()
+        static public void NoPdf()
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Finish");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(OutputError() + "THE FILE IS NOT A PDF");
+            Console.ResetColor();
+        }
+        static internal void NotReadable()
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(OutputError() + "THE FILE IS NOT READLABLE");
+            Console.ResetColor();
+        }
+        static public void Terminate()
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(OutputError() + "THE PROGRAMM WILL BE TERMINATED DUE TO ERROS");
+            Console.ResetColor();
+        }
+
+        static public void Exceptions(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(OutputError() + message);
             Console.ResetColor();
 
+        }
+
+        static public void NoNumbers()
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(OutputError() + "NO NUMBERS IN THE FILE.");
+            Console.ResetColor();
         }
     }
+    #endregion
 
-    internal class Results // : Userinterface
+    #region "Info Outputs"
+    static public class Info 
     {
-        public void BenfordDistribution()
+        static public void Welcome()
         {
-            throw new NotImplementedException();
-
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Start the Benford analysis.");
+            Console.ResetColor();
         }
 
-        public void BenfordNumbers(double[] digits)
+        static public string OutputInfo()
         {
-            //double[] benfordNumbers = new double[9] { 30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6 };
-            var benfordNumbers = new[] { 30.1, 17.6, 12.5, 9.7, 7.9, 6.7, 5.8, 5.1, 4.6 };
-            Console.WriteLine(benfordNumbers);
-            //double[] calcdiff = CalculateDifference(benfordNumbers, digits);
-            //PrinResults(benfordNumbers, digits, calcdiff);
+            return "Info: ";
         }
-
-        // YourDistribution und Deviation und Benford put together because its just a for loop to print the results
-        public void YourDistribution()
+        static public void CheckFile()
         {
-            throw new NotImplementedException();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(OutputInfo() + "File is available");
+            Console.ResetColor();
         }
-
-        public void Deviation()
+        static public void CheckExtension()
         {
-            throw new NotImplementedException();
-
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(OutputInfo() + "File is pdf");
+            Console.ResetColor();
         }
-
-        //public void ResultMessage();/// (string text)
-        //{
-        //    Console.WriteLine(new string('#', 59));
-        //    Console.WriteLine("hi");
-        //    Console.WriteLine(new string('#', 59));
-        //    Console.ForegroundColor = ConsoleColor.Gray;
-        //}
-
-        public void PrinResults()///(double[] benford, double[] digits, double[] difference)
+        static public void CheckFileIsReadable()
         {
-            ///Threshold = 1.5;
-            Console.ForegroundColor = ConsoleColor.Blue;
-            //Console.WriteLine("Filename:\t {0} ", Filename);
-            //Console.WriteLine("Page Numbers:\t {0}", GetPageNumber);
-            //Console.WriteLine("All Numbers:\t {0}", AllNumbers);
-            //Console.WriteLine("Threshold:\t {0} %", Threshold);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(OutputInfo() + "File is readable");
+            Console.ResetColor();
+        }
+        static public void Finish()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(OutputInfo() + "Analysis completed.");
+            Console.ResetColor();
+        }
+    }
+    #endregion
 
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Console.WriteLine("\nBenford Distribution \t Your Distribution \t Difference ");
-            //int counter = 0;
-            //for (int i = 0; i <= benford.Length - 1; i++)
-            //{
-            //    if (Difference[i] < Threshold)
-            //    {
-            //        Console.ForegroundColor = ConsoleColor.Green;
-            //        Console.WriteLine("{0}: {1} % \t\t {2}: {3} %  \t\t {4}: {5} %", i + 1, benford[i], i + 1, digits[i], i + 1, difference[i]);
-            //        Console.ForegroundColor = ConsoleColor.Gray;
-            //    }
-                //    else
-                //    {
-                //        counter += 1;
-                //        Console.ForegroundColor = ConsoleColor.Red;
-                //        Console.WriteLine("{0}: {1} % \t\t {2}: {3} %  \t\t {4}: {5} %", i + 1, benford[i], i + 1, digits[i], i + 1, difference[i]);
-                //        Console.ForegroundColor = ConsoleColor.Gray;
-                //    }
-                //}
-                //Console.WriteLine("\nThere are differences in {0} cases:\n", counter);
-
-                //if (counter <= 3)
-                //{
-                //    Console.ForegroundColor = ConsoleColor.Green;
-                //    ResultMessage("Status: Might be ok.");
-                //}
-                //else if (counter == 4 || counter == 5)
-                //{
-                //    Console.ForegroundColor = ConsoleColor.DarkYellow;
-                //    ResultMessage("Status: Might be ok.");
-
-                //}
-                //else if (counter >= 6)
-                //{
-                //    Console.ForegroundColor = ConsoleColor.Red;
-                //    ResultMessage("Status: You should take a closer look to the numbers.");
-                //}
-                //else
-                //{
-                //    Console.ForegroundColor = ConsoleColor.Red;
-                //    ResultMessage("Status: Error while computing.");
-                //}
+    #region "Result Outputs"
+    class Results
+    {
+        public void StartOutput(Calculate calcObj)
+        {
+            if (calcObj != null)
+            {
+                ResultHeader();
+                ShowResults(calcObj);
             }
+            else
+            {
+                Error.NoObject();
+                throw new ArgumentNullException();
+            }
+        }
 
-        //public void FileInformations(double[] benford, double[] digits, double[] difference)
-        //{
-        //    // Threshold = 1.5;
-        //    Console.ForegroundColor = ConsoleColor.Blue;
-        //    Console.WriteLine("Filename:\t {0} ", Filename);
-        //    Console.WriteLine("Page Numbers:\t {0}", GetPageNumber);
-        //    Console.WriteLine("All Numbers:\t {0}", AllNumbers);
-        //    Console.WriteLine("Threshold:\t {0} %", Threshold);
-        //}
+        private void ResultHeader() /// (string text)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\n");
+            Console.WriteLine(new string('#', 59));
+            Console.WriteLine("Results of the benford analysis.");
+            Console.WriteLine(new string('#', 59));
+            Console.ResetColor();
+        }
+        private void PrintDeviation(int countDeviations)
+        {
+            Console.WriteLine("\nThere are differences in {0} cases.", countDeviations);
+
+            EvaluateDeviation(countDeviations);
+        }
+        private void ShowResults(Calculate calcObj)
+        {
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("Threshold:\t {0} %", calcObj.Threshold);
+            Console.WriteLine("Filename:\t {0}", calcObj.Filename);
+            Console.WriteLine("Counted Numbers: {0}", calcObj.NumbersInFile);
+            Console.WriteLine("\nBenford Distribution \t Your Distribution \t Difference ");
+
+            for (var i = 0; i < calcObj.CountedNumbers.Length; i++)
+            {
+                if (calcObj.Difference[i] < calcObj.Threshold)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("{0}: {1} % \t\t {2}: {3} %  \t\t {4}: {5} %", i + 1, calcObj.BenfordNumbers[i], i + 1, calcObj.Digits[i], i + 1, calcObj.Difference[i]);
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("{0}: {1} % \t\t {2}: {3} %  \t\t {4}: {5} %", i + 1, calcObj.BenfordNumbers[i], i + 1, calcObj.Digits[i], i + 1, calcObj.Difference[i]);
+                }
+            }
+            Console.ForegroundColor = ConsoleColor.Gray;
+            PrintDeviation(calcObj.CountDeviations);
+        }
+
+        private void EvaluateDeviation(int counter)
+        {
+            switch (counter)
+            {
+                case var n when (n <= 3):
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Status: Might be ok.");
+                    break;
+                case var n when (n == 4 || n == 5):
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.WriteLine("Status: Might be ok.");
+                    break;
+                case var n when (n >= 6):
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Status: You should take a closer look to the numbers.");
+                    break;
+            }
+            Console.ResetColor();
+        }
     }
+    #endregion
 }
+

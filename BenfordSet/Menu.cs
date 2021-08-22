@@ -26,7 +26,6 @@ namespace BenfordSet
         //        else
         //            Console.WriteLine("Dont now what to do");
         //    }
-
         //}
     }
 }

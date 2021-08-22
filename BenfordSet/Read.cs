@@ -1,10 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace BenfordSet
 {
@@ -14,135 +16,65 @@ namespace BenfordSet
     /// provides the functionality to read diffrent types of files.
     /// </summary>
 
-    abstract class Read
+    class Read : FileAttributes
     {
-        public string Source { get; protected set; }
-        public int PageNumber { get; protected set; } = 0;
-        public string Information { get; protected set; }
-        public string Content { get; protected set; } = "";
-        abstract public string GetContent();
-    }
-
-     class Readpdf : Read
-    {
-        //static AutoResetEvent waiter = new AutoResetEvent(true);
-        public Readpdf(string source)
+        public Read(ref FileAttributes fileattributes)  //: base(pathToFile) { }
         {
-            this.Source = source;
+            if (fileattributes != null)
+            {
+                SourceFile = fileattributes.SourceFile;
+                Filename = Path.GetFileName(SourceFile);
+            }
+            else
+            {
+                Error.NoObject();
+                throw new ArgumentNullException();
+            }
         }
-        override public string GetContent()
+
+        public async Task<bool> GetFileContent()
         {
-            Error err = new Error();
-            /// <summary>
-            /// The inherited method GetContent is reading the pdf content and invokes 
-            /// the CountNumber method for analysing issues.
-            /// </summary>+
             try
             {
-                //waiter.Set();
-                using PdfDocument document = PdfDocument.Open(Source);
-                foreach (Page page in document.GetPages())
+                using PdfDocument document = PdfDocument.Open(SourceFile);
+                foreach (var page in document.GetPages())
                 {
-                    ReadingCompleted(page); // += readFilesCompleted;
-                    //await ReadingCompleted(page);
+                    FetchContent(page); // += readFilesCompleted;
                 }
-
-                //Task.WaitAll(Test());
-                //Console.WriteLine("junger thread?");
-
-                //waiter.WaitOne();
-                if (String.IsNullOrWhiteSpace(Content))
-                    return string.Empty;
-                else
-                    return Content;
-            }
-            catch(ArgumentException e)
-            {
-                err.Exceptions(e.Message);
-            }
-            catch(IndexOutOfRangeException e)
-            {
-                err.Exceptions(e.Message);
+                if (String.IsNullOrEmpty(FileContent))
+                    Error.NotReadable();
 
             }
-            catch(OutOfMemoryException e )
+
+            #region "Exception handling"
+            catch (ArgumentNullException e)
             {
-                err.Exceptions(e.Message);
+                Error.Exceptions(e.Message);
+            }
+            catch (ArgumentException e)
+            {
+                Error.Exceptions(e.Message);
+            }
+            catch (OutOfMemoryException e)
+            {
+                Error.Exceptions(e.Message);
             }
             catch (Exception e)
             {
-                err.Exceptions(e.Message);
+                Error.Exceptions(e.Message);
             }
-            return string.Empty;
-        }
-
-        async Task<bool> Test()
-        {
-            Console.WriteLine("neuer thread?");
-            await Task.Run(() =>
-            {
-                Console.WriteLine("warte");
-                //System.Threading.Thread.Sleep(10000);
-                Console.ReadLine();
-                Console.WriteLine("wieder da");
-
-            });
             return true;
         }
-
-        public void ReadingCompleted(Page p)
+        #endregion
+        private void FetchContent(Page p)
         {
-            Content += p.Text;
-            PageNumber = p.Number;
-        }
-
-        static void readFilesCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
-        {
-            Console.WriteLine("reading completed");
+            if (p != null)
+            {
+                FileContent += p.Text;
+                PageNumbers = p.Number;
+            }
+            else
+                throw new ArgumentException();
         }
     }
-
-    //class Readtextfile : Read
-    //{
-    //    public override string GetContent()
-    //    {
-    //        try
-    //        {
-    //        }
-    //        catch
-    //        {
-    //            return 1;
-    //        }
-    //        return 0;
-
-    //    }
-    //}
-
-    //class Readwordfile : Read
-    //{
-    //    public override string GetContent()
-    //    {
-    //        return 0;
-    //    }
-    //}
-
-    //class Readwebpage : Read
-    //{
-    //    public override string GetContent()
-    //    {
-    //        return 0;
-    //    }
-    //}
 }
-
-
-// Not used properties
-//public int ImageNumber { get; protected set; }
-//public string Filename { get; set; }
-
-
-//ImageNumber = page.NumberOfImages;
-//IReadOnlyList<Letter> letters = page.Letters;
-//string example = string.Join(string.Empty, letters.Select(x => x.Value));
-//IEnumerable<Word> words = page.GetWords();
-//IEnumerable<IPdfImage> images = page.GetImages();
