@@ -1,4 +1,7 @@
-﻿//using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 //using System.Text;
 //using System.Text.RegularExpressions;
 //using System.Collections.Generic;
@@ -10,32 +13,58 @@ namespace BenfordSet
 {
     class Programs
     {
-            static int Main(string[] args)
+
+        ///<summary>This Program analyses text files, like *.pdf, *.txt or web pages
+        ///to check if the contained numbers follow the benford set.
+        ///This might be helpful to check if the numbers are faked.</summary>
+        ///
+        private static readonly Userinterface test = new Userinterface();
+
+        static async Task<int> Main(string[] args)
+        {
+            if (args.Length != 1 || string.IsNullOrWhiteSpace(args[0])) // is that the same?
+                return 1;
+
+            var pathToFile = args;
+            //FileAttributes myFile;
+            //myFile = new FileAttributes()
+            var fileAttributes = new FileAttributes() { SourceFile = pathToFile[0] };
+            fileAttributes.SetFilename();
+
+           
+
+            var fileInput = new FileInput(fileAttributes); // Zweite Klasse
+
+            if (fileInput.Requirements())
             {
-                ///<summary>This Program analyses text files, like *.pdf, *.txt or web pages
-                ///to check if the contained numbers follow the benford set.
-                ///This might be helpful to check if the numbers are faked.</summary>
-                Check check = new Check(args[0]);
-                Error error = new Error();
-                Count count = new Count();
-                if (check.Requirements()) /// check.CheckSource() && check.FileIsPdf() && check.HasReadAccess()) // one class and this in one method
-                {
-                    Readpdf read = new Readpdf(args[0]);
-                    count.CountNumbers(read.GetContent()); // ???Is it useful to invoke the CountNumber method in that way or is there a better way???
-                    
-                    Calculate calculate = new Calculate(count.AllNumbers, count.FoundNumbers);
-                    calculate.CalculateDistribution();
-                    calculate.Deviation();
-                    calculate.ClassifyResults();
-                    return 0;
-                }
-                else
-                {
-                    error.Terminate();
-                    return 1;
-                }
+                var readFile = new Read(ref fileAttributes);
+                await readFile.GetFileContent();
+
+                var count = new Count(readFile);
+                count.CountAllNumbers();
+
+                var calculate = new Calculate(count);
+                calculate.StartCalculation();
+
+                var output = new Results();
+                output.StartOutput(calculate);
             }
+            else
+            {
+                Error.Terminate();
+                return 1;
+            }
+            return 0;
         }
+    }
 }
 
 
+
+
+
+//public static readonly Info info = new Info(); 
+//public static readonly Results results = new Results();
+
+//Notizen
+//    Wenn Konstruktor in der obersten klasse benötigt wird //var fileAttributes = new FileAttributes(pathToFile[0]);
